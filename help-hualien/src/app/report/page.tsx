@@ -222,7 +222,6 @@ export default function Report() {
                 <ul className="list-disc list-inside space-y-1">
                   <li>如遇緊急狀況請立即撥打119或110</li>
                   <li>請確保個人安全後再進行回報</li>
-                  <li>我們會在24小時內與您聯繫</li>
                 </ul>
               </div>
             </div>

@@ -88,7 +88,7 @@ export default function Home() {
               <h2 className="text-base sm:text-lg font-semibold text-gray-800">受災戶回報</h2>
             </div>
             <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">
-              快速回報災害情況，我們會立即為您處理。
+              快速回報災害情況，志工看見了會標註前往。
             </p>
             <button
               onClick={() => router.push('/report')}
@@ -105,7 +105,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h2 className="text-base sm:text-lg font-semibold text-gray-800">回報單列表</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-800">[志工請點這] 回報單列表</h2>
             </div>
             <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">
               查看所有回報案件的狀態和處理進度。
@@ -128,7 +128,7 @@ export default function Home() {
               <h2 className="text-base sm:text-lg font-semibold text-gray-800">案件狀態</h2>
             </div>
             <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">
-              查看您回報案件的處理進度。
+              查看回報案件的狀態，志工可以點擊更新狀態。
             </p>
             <button
               onClick={() => router.push('/status')}
