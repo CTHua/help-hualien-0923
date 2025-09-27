@@ -77,10 +77,12 @@ export default function Report() {
       await fetch('https://help-hualien-api.cthua.io/report', {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          ...formData,
+          address: formData.address,
+          description: formData.description
         })
       });
 
