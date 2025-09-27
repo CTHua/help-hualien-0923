@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class CreateUserDto {
     @ApiProperty({ description: '姓名' })
@@ -9,6 +9,6 @@ export class CreateUserDto {
 
     @ApiProperty({ description: '電話' })
     @IsNotEmpty()
-    @IsString()
+    @Matches(/^09\d{8}$/, { message: '請輸入正確的手機格式（例如 0912345678）' })
     phone: string;
 }
