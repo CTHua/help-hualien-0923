@@ -38,7 +38,7 @@ export function getInAppBrowserType(): string | null {
   if (userAgent.includes('line/')) return 'LINE';
   if (userAgent.includes('fban') || userAgent.includes('fbav')) return 'Facebook';
   if (userAgent.includes('instagram')) return 'Instagram';
-  if (userAgent.includes('Barcelona')) return 'Threads';
+  if (userAgent.includes('barcelona')) return 'Threads';
   if (userAgent.includes('micromessenger')) return 'WeChat';
   if (userAgent.includes('qq/')) return 'QQ';
   if (userAgent.includes('twitter')) return 'Twitter';
