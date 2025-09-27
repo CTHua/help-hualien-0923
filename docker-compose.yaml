@@ -4,7 +4,7 @@ services:
     container_name: help-hualien-web
     build:
       context: ./help-hualien
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - ${PORT}:3000
     environment:
@@ -15,7 +15,7 @@ services:
     container_name: help-hualien-api
     build:
       context: ./help-hualien-api
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - ${PORT}:3000
     environment:
