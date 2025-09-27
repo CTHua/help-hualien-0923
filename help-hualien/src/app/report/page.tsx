@@ -87,7 +87,8 @@ export default function Report() {
       });
 
       alert('回報已成功提交！我們會盡快處理您的案件。');
-
+      // 跳轉到回報單列表
+      router.push('/reports');
       // 重置表單
       setFormData({
         name: '',
