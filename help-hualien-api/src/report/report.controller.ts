@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateReportDto } from "./dto/create-report.dto";
@@ -14,8 +14,11 @@ export class ReportController {
 
   @Get('')
   @ApiOperation({ summary: 'Get reports' })
-  async getReports() {
-    return await this.reportService.getReports();
+  async getReports(
+    @Query('latitude') latitude?: number,
+    @Query('longitude') longitude?: number
+  ) {
+    return await this.reportService.getReports(latitude, longitude);
   }
 
   @Post('')
@@ -29,9 +32,13 @@ export class ReportController {
   @Get('my')
   @ApiOperation({ summary: 'Get current user reports' })
   @ApiResponse({ type: [ReportDto] })
-  async findMy(@CurrentUser() user: any): Promise<ReportDto[]> {
+  async findMy(
+    @CurrentUser() user: any,
+    @Query('latitude') latitude?: number,
+    @Query('longitude') longitude?: number
+  ): Promise<ReportDto[]> {
     const userId = user.uid;
-    return await this.reportService.findMy(userId);
+    return await this.reportService.findMy(userId, latitude, longitude);
   }
 
   @Put(':reportId')

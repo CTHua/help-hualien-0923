@@ -22,6 +22,12 @@ export class Report {
     @Column()
     description: string;
 
+    @Column({ type: 'decimal', precision: 10, scale: 8, nullable: true })
+    latitude: number;
+
+    @Column({ type: 'decimal', precision: 11, scale: 8, nullable: true })
+    longitude: number;
+
     @Column({ type: 'enum', enum: ReportStatus, default: ReportStatus.PENDING })
     status: ReportStatus;
 

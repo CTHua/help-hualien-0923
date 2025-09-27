@@ -22,6 +22,15 @@ export class ReportDto {
     @ApiProperty({ description: '描述' })
     description: string;
 
+    @ApiProperty({ description: '緯度', required: false })
+    latitude?: number;
+
+    @ApiProperty({ description: '經度', required: false })
+    longitude?: number;
+
+    @ApiProperty({ description: '距離(公里)', required: false })
+    distance?: number;
+
     @ApiProperty({ description: '在路上紀錄', type: [OnGoingDto] })
     @Type(() => OnGoingDto)
     onGoings: OnGoingDto[];

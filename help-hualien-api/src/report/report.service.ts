@@ -7,6 +7,7 @@ import { plainToInstance } from "class-transformer";
 import { ReportDto } from "./dto/report.dto";
 import { UserService } from "src/user/user.service";
 import { UpdateReportDto } from "./dto/update-report.dto";
+import { calculateDistance } from "src/common/utils/distance.util";
 
 @Injectable()
 export class ReportService {
@@ -27,7 +28,7 @@ export class ReportService {
         return this.reportRepository.save(report);
     }
 
-    async getReports() {
+    async getReports(userLatitude?: number, userLongitude?: number) {
         const reports = await this.reportRepository.find({
             relations: ['onGoings', 'onGoings.user'],
             order: {
@@ -40,8 +41,14 @@ export class ReportService {
             const arrivedCount = report.onGoings?.filter(og => og.status === 'arrived').length || 0;
             const leftCount = report.onGoings?.filter(og => og.status === 'left').length || 0;
 
+            let distance: number | undefined = undefined;
+            if (userLatitude && userLongitude && report.latitude && report.longitude) {
+                distance = calculateDistance(userLatitude, userLongitude, report.latitude, report.longitude);
+            }
+
             return {
                 ...report,
+                distance,
                 onGoingCount,
                 arrivedCount,
                 leftCount,
@@ -51,12 +58,25 @@ export class ReportService {
         return plainToInstance(ReportDto, reportsWithStats);
     }
 
-    async findMy(userId: string) {
+    async findMy(userId: string, userLatitude?: number, userLongitude?: number) {
         const reports = await this.reportRepository.find({
             where: { userId },
             relations: ['onGoings', 'onGoings.user'],
         });
-        return plainToInstance(ReportDto, reports);
+
+        const reportsWithDistance = reports.map(report => {
+            let distance: number | undefined = undefined;
+            if (userLatitude && userLongitude && report.latitude && report.longitude) {
+                distance = calculateDistance(userLatitude, userLongitude, report.latitude, report.longitude);
+            }
+
+            return {
+                ...report,
+                distance,
+            };
+        });
+
+        return plainToInstance(ReportDto, reportsWithDistance);
     }
 
     async updateReport(userId: string, reportId: number, updateReportDto: UpdateReportDto) {
