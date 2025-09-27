@@ -12,10 +12,17 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* 強制 light mode - 覆蓋 dark mode 偏好設定 */
+.light {
+  --background: #ffffff !important;
+  --foreground: #171717 !important;
+}
+
+/* 確保即使系統偏好 dark mode 也使用 light mode */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  .light {
+    --background: #ffffff !important;
+    --foreground: #171717 !important;
   }
 }
 
@@ -23,4 +30,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 額外確保強制 light mode */
+html.light,
+html.light body {
+  color-scheme: light !important;
+}
+
+/* 防止任何 dark mode 樣式 */
+html.light * {
+  color-scheme: light !important;
 }
