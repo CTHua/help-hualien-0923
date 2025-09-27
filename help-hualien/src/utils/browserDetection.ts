@@ -13,7 +13,7 @@ export function isInAppBrowser(): boolean {
     'fban', // Facebook App
     'fbav', // Facebook App
     'instagram', // Instagram
-    'threads', // Threads
+    'barcelona', // Threads
     'micromessenger', // WeChat
     'qq/', // QQ
     'twitter', // Twitter/X
@@ -32,7 +32,6 @@ export function isInAppBrowser(): boolean {
  */
 export function getInAppBrowserType(): string | null {
   if (typeof window === 'undefined') return null;
-
   const userAgent = navigator.userAgent.toLowerCase();
 
   if (userAgent.includes('line/')) return 'LINE';
