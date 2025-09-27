@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateReportDto } from "./dto/create-report.dto";
@@ -8,6 +8,7 @@ import { ReportDto } from "./dto/report.dto";
 import { UserService } from "src/user/user.service";
 import { UpdateReportDto } from "./dto/update-report.dto";
 import { calculateDistance } from "src/common/utils/distance.util";
+import { ReportStatus } from "./enum/report-status.enum";
 
 @Injectable()
 export class ReportService {
@@ -23,6 +24,11 @@ export class ReportService {
         const user = await this.userService.findOne(userId);
         if (!user) {
             throw new NotFoundException('User not found');
+        }
+        // 限制回報次數
+        const reportCount = await this.reportRepository.count({ where: { userId, status: ReportStatus.PENDING } });
+        if (reportCount >= 5) {
+            throw new BadRequestException('回報次數已達上限');
         }
         const report = this.reportRepository.create({ ...createReportDto, userId, name: user.name, phone: user.phone });
         return this.reportRepository.save(report);
