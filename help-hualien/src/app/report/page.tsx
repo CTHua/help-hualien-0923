@@ -54,7 +54,18 @@ export default function Report() {
         ...formData,
         userId: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toISOString()
+      });
+
+      const token = await user.getIdToken();
+
+      await fetch('https://help-hualien-api.cthua.io/report', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...formData,
+        })
       });
 
       alert('回報已成功提交！我們會盡快處理您的案件。');

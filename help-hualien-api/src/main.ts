@@ -8,10 +8,6 @@ import { ResponseInterceptor } from "./common/interceptors/response.interceptor"
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 設定全域前綴路由
-  app.setGlobalPrefix('v1', {
-    exclude: [{ path: 'health', method: RequestMethod.GET }],
-  });
 
   // 只能允許DTO白名單內的屬性被傳入
   app.useGlobalPipes(
@@ -21,7 +17,6 @@ async function bootstrap() {
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,
-        strategy: 'excludeAll',
       },
     }),
   );
@@ -31,20 +26,15 @@ async function bootstrap() {
     new ResponseInterceptor(),
   );
 
-  app.enableVersioning({
-    defaultVersion: '1',
-    type: VersioningType.URI,
-  });
 
   // Swagger
   if (process.env.NODE_ENV === 'development') {
     const config = new DocumentBuilder()
       .setTitle('Help Hualien API Document')
-      .setVersion('v1')
       .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('/:version/docs', app, document,
+    SwaggerModule.setup('/docs', app, document,
       {
         swaggerOptions: {
           persistAuthorization: true
