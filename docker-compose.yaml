@@ -1,0 +1,52 @@
+services:
+web:
+  image: help-hualien-web
+  container_name: help-hualien-web
+  build:
+    context: ./help-hualien
+    dockerfile: dockerfile
+  ports:
+    - ${PORT}:3000
+  environment:
+    API_URL: ${API_URL}
+
+  api:
+    image: help-hualien-api
+    container_name: help-hualien-api
+    build:
+      context: ./help-hualien-api
+      dockerfile: dockerfile
+    ports:
+      - ${PORT}:3000
+    environment:
+      PORT: ${PORT}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      NODE_ENV: ${NODE_ENV}
+      TYPE: ${TYPE}
+      PROJECT_ID: ${PROJECT_ID}
+      PRIVATE_KEY_ID: ${PRIVATE_KEY_ID}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      CLIENT_EMAIL: ${CLIENT_EMAIL}
+      CLIENT_ID: ${CLIENT_ID}
+      AUTH_URI: ${AUTH_URI}
+      TOKEN_URI: ${TOKEN_URI}
+      AUTH_CERT_URL: ${AUTH_CERT_URL}
+      CLIENT_CERT_URL: ${CLIENT_CERT_URL}
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: help-hualien-postgres
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - ${VOLUME_PATH}/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: always
