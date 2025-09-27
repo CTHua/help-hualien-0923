@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -111,14 +111,7 @@ export default function Status() {
     }
   }, [user, loading, profileLoading, hasProfile, router]);
 
-  useEffect(() => {
-    if (user) {
-      fetchMyReports();
-      fetchMyOngoings();
-    }
-  }, [user]);
-
-  const fetchMyReports = async () => {
+  const fetchMyReports = useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -151,9 +144,9 @@ export default function Status() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
-  const fetchMyOngoings = async () => {
+  const fetchMyOngoings = useCallback(async () => {
     if (!user) return;
 
     setIsOngoingLoading(true);
@@ -186,7 +179,14 @@ export default function Status() {
     } finally {
       setIsOngoingLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchMyReports();
+      fetchMyOngoings();
+    }
+  }, [user, fetchMyReports, fetchMyOngoings]);
 
   const openEditModal = (report: MyReport) => {
     setEditingReport(report);
@@ -501,7 +501,7 @@ export default function Status() {
                       處理進度
                     </h4>
                     <div className="space-y-3">
-                      {report.onGoings.map((ongoing, index) => (
+                      {report.onGoings.map((ongoing) => (
                         <div key={ongoing.id} className="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-3">

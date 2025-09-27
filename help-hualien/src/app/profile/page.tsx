@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -21,14 +21,7 @@ export default function Profile() {
     }
   }, [user, loading, router]);
 
-  useEffect(() => {
-    if (user) {
-      // 載入現有的個人資料
-      loadUserProfile();
-    }
-  }, [user]);
-
-  const loadUserProfile = async () => {
+  const loadUserProfile = useCallback(async () => {
     try {
       const token = await user?.getIdToken();
       const response = await fetch('https://help-hualien-api.cthua.io/users', {
@@ -50,7 +43,14 @@ export default function Profile() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      // 載入現有的個人資料
+      loadUserProfile();
+    }
+  }, [user, loadUserProfile]);
 
   if (loading) {
     return (

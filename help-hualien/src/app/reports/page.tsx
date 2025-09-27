@@ -1,8 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+
+interface OnGoing {
+  id: number;
+  reportId: number;
+  userId: string;
+  minutes: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface Report {
   id: number;
@@ -11,7 +21,7 @@ interface Report {
   phone: string;
   address: string;
   description: string;
-  onGoings: any[];
+  onGoings: OnGoing[];
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -48,13 +58,7 @@ export default function Reports() {
     }
   }, [user, loading, profileLoading, hasProfile, router]);
 
-  useEffect(() => {
-    if (user) {
-      fetchReports();
-    }
-  }, [user]);
-
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -86,7 +90,13 @@ export default function Reports() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchReports();
+    }
+  }, [user, fetchReports]);
 
   const getStatusText = (status: string) => {
     switch (status) {
