@@ -315,7 +315,7 @@ export default function Reports() {
             <h3 className="text-lg font-medium text-gray-800 mb-2">載入失敗</h3>
             <p className="text-gray-600 mb-4">{error}</p>
             <button
-              onClick={fetchReports}
+              onClick={() => fetchReports()}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               重試

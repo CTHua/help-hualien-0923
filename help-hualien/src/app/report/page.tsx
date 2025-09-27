@@ -118,7 +118,12 @@ export default function Report() {
 
       const token = await user.getIdToken();
 
-      const reportData: any = {
+      const reportData: {
+        address: string;
+        description: string;
+        latitude?: number;
+        longitude?: number;
+      } = {
         address: formData.address,
         description: formData.description
       };
