@@ -5,6 +5,7 @@ import { auth } from '../../configs/firebaseConfig';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import InAppBrowserWarning from '../../components/InAppBrowserWarning';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -49,8 +50,10 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <>
+      <InAppBrowserWarning />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">歡迎使用</h1>
           <p className="text-gray-600">請使用Google帳號登入</p>
@@ -78,7 +81,8 @@ export default function Login() {
             <a href="#" className="text-blue-600 hover:text-blue-500"> 隱私政策</a>
           </p>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
