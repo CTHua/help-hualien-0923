@@ -77,6 +77,26 @@ export default function Home() {
           </div>
         </div>
 
+        {/* 測試公告橫幅 */}
+        <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8 animate-pulse">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <svg className="w-6 h-6 text-white mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+                ⚠️ 刪檔測試中 ⚠️
+              </h2>
+            </div>
+            <p className="text-white text-lg sm:text-xl font-semibold">
+              沒意外預計 9/28 16:00 刪檔正式上線
+            </p>
+            <p className="text-red-100 text-sm mt-2">
+              目前為測試階段，所有資料將會清空重置
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
             <div className="flex items-center mb-3 sm:mb-4">

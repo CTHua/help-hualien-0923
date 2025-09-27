@@ -28,6 +28,7 @@ interface Report {
   onGoingCount: number;
   arrivedCount: number;
   leftCount: number;
+  distance?: number; // 距離（公尺）
 }
 
 interface ApiResponse {
@@ -45,6 +46,8 @@ export default function Reports() {
   const [showModal, setShowModal] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -58,7 +61,7 @@ export default function Reports() {
     }
   }, [user, loading, profileLoading, hasProfile, router]);
 
-  const fetchReports = useCallback(async () => {
+  const fetchReports = useCallback(async (latitude?: number, longitude?: number) => {
     if (!user) return;
 
     setIsLoading(true);
@@ -66,7 +69,14 @@ export default function Reports() {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch('https://help-hualien-api.cthua.io/report', {
+      const url = new URL('https://help-hualien-api.cthua.io/report');
+
+      if (latitude && longitude) {
+        url.searchParams.append('latitude', latitude.toString());
+        url.searchParams.append('longitude', longitude.toString());
+      }
+
+      const response = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -97,6 +107,50 @@ export default function Reports() {
       fetchReports();
     }
   }, [user, fetchReports]);
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('您的瀏覽器不支援地理定位功能');
+      return;
+    }
+
+    setIsGettingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ latitude, longitude });
+        setIsGettingLocation(false);
+        // 使用GPS位置重新獲取報告
+        fetchReports(latitude, longitude);
+      },
+      (error) => {
+        console.error('獲取位置失敗:', error);
+        setIsGettingLocation(false);
+        let errorMessage = '';
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = '使用者拒絕了地理定位請求。請在瀏覽器設定中允許位置存取權限。';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = '位置訊息不可用。請確保您的裝置支援GPS定位，或嘗試移動到空曠的地方。';
+            break;
+          case error.TIMEOUT:
+            errorMessage = '定位請求超時。請檢查網路連線並重新嘗試。';
+            break;
+          default:
+            errorMessage = '獲取位置時發生未知錯誤。請確保您的裝置支援定位功能並已開啟GPS。';
+            break;
+        }
+        alert(`無法獲取您的位置: ${errorMessage}`);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000 // 5分鐘內的快取位置可接受
+      }
+    );
+  };
 
   const getStatusText = (status: string) => {
     switch (status) {
@@ -221,15 +275,28 @@ export default function Reports() {
               <h1 className="text-3xl font-bold text-gray-800 mb-2">回報單列表</h1>
               <p className="text-gray-600">查看所有回報案件的狀態</p>
             </div>
-            <button
-              onClick={fetchReports}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              重新整理
-            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => fetchReports()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                重新整理
+              </button>
+              <button
+                onClick={getCurrentLocation}
+                disabled={isGettingLocation}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {isGettingLocation ? '定位中...' : '使用GPS定位'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -303,6 +370,20 @@ export default function Reports() {
                     <h4 className="text-sm font-medium text-gray-700 mb-1">地址</h4>
                     <p className="text-gray-900">{report.address}</p>
                   </div>
+                  {report.distance !== undefined && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-1">距離</h4>
+                      <div className="flex items-center text-gray-900">
+                        <svg className="w-4 h-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="font-medium">
+                          {report.distance.toFixed(2)} 公里
+                        </span>
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <h4 className="text-sm font-medium text-gray-700 mb-1">處理狀態</h4>
                     <div className="flex space-x-4 text-sm">

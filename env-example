@@ -1,0 +1,21 @@
+PORT="55688"
+
+DB_PORT="55689"
+DB_USER="postgres"
+DB_PASSWORD="xxxxxx"
+DB_NAME="postgres"
+
+VOLUME_PATH="./data"
+
+# firebase setting
+TYPE="service_account"
+PROJECT_ID="xxxxxx"
+PRIVATE_KEY_ID="xxxxxx"
+PRIVATE_KEY="xxxxxx"
+CLIENT_EMAIL="xxx"
+CLIENT_ID="xxxxxx"
+AUTH_URI="https://accounts.google.com/o/oauth2/auth"
+TOKEN_URI="https://oauth2.googleapis.com/token"
+AUTH_CERT_URL="https://www.googleapis.com/oauth2/v1/certs"
+CLIENT_CERT_URL="xxx"
+
