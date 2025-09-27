@@ -6,6 +6,7 @@ import { Report } from "./entity/report.entity";
 import { plainToInstance } from "class-transformer";
 import { ReportDto } from "./dto/report.dto";
 import { UserService } from "src/user/user.service";
+import { UpdateReportDto } from "./dto/update-report.dto";
 
 @Injectable()
 export class ReportService {
@@ -49,5 +50,24 @@ export class ReportService {
 
         return plainToInstance(ReportDto, reportsWithStats);
     }
+
+    async findMy(userId: string) {
+        const reports = await this.reportRepository.find({
+            where: { userId },
+            relations: ['onGoings', 'onGoings.user'],
+        });
+        return plainToInstance(ReportDto, reports);
+    }
+
+    async updateReport(userId: string, reportId: number, updateReportDto: UpdateReportDto) {
+        const report = await this.reportRepository.findOne({ where: { id: reportId, userId } });
+        if (!report) {
+            throw new NotFoundException('Report not found or not owned by user');
+        }
+        Object.assign(report, updateReportDto);
+        const updatedReport = await this.reportRepository.save(report);
+        return plainToInstance(ReportDto, updatedReport);
+    }
+
 }
 
