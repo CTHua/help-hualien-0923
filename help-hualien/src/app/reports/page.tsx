@@ -170,6 +170,9 @@ export default function Reports() {
         throw new Error('回報前往失敗');
       }
 
+      // 跳轉到狀態頁面
+      router.push('/status');
+
       // 重新獲取報告列表以更新狀態
       await fetchReports();
       closeModal();
