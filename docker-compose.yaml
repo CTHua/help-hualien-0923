@@ -1,14 +1,14 @@
 services:
-web:
-  image: help-hualien-web
-  container_name: help-hualien-web
-  build:
-    context: ./help-hualien
-    dockerfile: dockerfile
-  ports:
-    - ${PORT}:3000
-  environment:
-    API_URL: ${API_URL}
+  web:
+    image: help-hualien-web
+    container_name: help-hualien-web
+    build:
+      context: ./help-hualien
+      dockerfile: dockerfile
+    ports:
+      - ${PORT}:3000
+    environment:
+      API_URL: ${API_URL}
 
   api:
     image: help-hualien-api
