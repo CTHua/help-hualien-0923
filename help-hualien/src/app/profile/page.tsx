@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 export default function Profile() {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshProfile } = useAuth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +31,7 @@ export default function Profile() {
   const loadUserProfile = async () => {
     try {
       const token = await user?.getIdToken();
-      const response = await fetch('https://help-hualien-api.cthua.io/profile', {
+      const response = await fetch('https://help-hualien-api.cthua.io/users', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -41,8 +41,8 @@ export default function Profile() {
       if (response.ok) {
         const profile = await response.json();
         setFormData({
-          name: profile.name || '',
-          phone: profile.phone || ''
+          name: profile?.data.name || '',
+          phone: profile?.data.phone || ''
         });
       }
     } catch (error) {
@@ -82,8 +82,8 @@ export default function Profile() {
     try {
       const token = await user.getIdToken();
 
-      const response = await fetch('https://help-hualien-api.cthua.io/profile', {
-        method: 'PUT',
+      const response = await fetch('https://help-hualien-api.cthua.io/users', {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -93,6 +93,10 @@ export default function Profile() {
 
       if (response.ok) {
         alert('個人資料已成功更新！');
+        // 刷新AuthContext中的用戶資料
+        await refreshProfile();
+        // 跳轉回首頁
+        router.push('/');
       } else {
         throw new Error('更新失敗');
       }

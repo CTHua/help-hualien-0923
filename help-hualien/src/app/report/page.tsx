@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function Report() {
-  const { user, loading } = useAuth();
+  const { user, loading, hasProfile, profileLoading, userProfile } = useAuth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,7 +21,23 @@ export default function Report() {
     }
   }, [user, loading, router]);
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !profileLoading && user && !hasProfile) {
+      router.push('/profile');
+    }
+  }, [user, loading, profileLoading, hasProfile, router]);
+
+  useEffect(() => {
+    if (userProfile) {
+      setFormData(prev => ({
+        ...prev,
+        name: userProfile.name,
+        phone: userProfile.phone
+      }));
+    }
+  }, [userProfile]);
+
+  if (loading || profileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -32,7 +48,7 @@ export default function Report() {
     );
   }
 
-  if (!user) {
+  if (!user || !hasProfile) {
     return null;
   }
 
@@ -115,7 +131,8 @@ export default function Report() {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none"
+                readOnly
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
                 placeholder="請輸入您的姓名"
               />
             </div>
@@ -131,9 +148,33 @@ export default function Report() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none"
+                readOnly
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
                 placeholder="請輸入聯絡電話"
               />
+              <p className="mt-1 text-sm text-gray-500">
+                聯絡資訊已從您的個人資料自動填入
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <div className="flex items-start">
+              <svg className="w-5 h-5 text-blue-600 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              <div className="text-sm text-blue-800">
+                <p className="font-medium">聯絡資訊說明：</p>
+                <p>姓名和電話已從您的個人資料自動填入。如需修改，請前往
+                  <button
+                    onClick={() => router.push('/profile')}
+                    className="text-blue-700 underline hover:text-blue-800 mx-1"
+                  >
+                    個人資料頁面
+                  </button>
+                  進行更新。
+                </p>
+              </div>
             </div>
           </div>
 
