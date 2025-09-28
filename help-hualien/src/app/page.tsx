@@ -78,7 +78,7 @@ export default function Home() {
         </div>
 
         {/* 測試公告橫幅 */}
-        <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8 animate-pulse">
+        {/* <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8 animate-pulse">
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
               <svg className="w-6 h-6 text-white mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -95,7 +95,7 @@ export default function Home() {
               目前為測試階段，所有資料將會清空重置
             </p>
           </div>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
