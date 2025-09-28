@@ -351,7 +351,12 @@ export default function Status() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('zh-TW', {
+      // 預設是 2025-09-28T03:12:08.007Z
+    // 要轉成 +8 時區
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + 8);
+    
+    return date.toLocaleString('zh-TW', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
